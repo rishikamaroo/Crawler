@@ -20,11 +20,14 @@
 
         private Logger logger;
 
+        private ExceptionHandler exceptionHandler;
+
         private bool start = true;
 
         public WebCrawler()
         {
             this.logger = new Logger();
+            this.exceptionHandler = new ExceptionHandler();
         }
 
         public Content RetrieveContent(URL url)
@@ -45,13 +48,13 @@
             catch (Exception e)
             {
                 this.logger.LogException("Exception when trying to retrieve content from web page ", e);
-                return null;
+                return this.exceptionHandler.GenerateResponse<Content>(e);
             }
             finally
             {
                 this.logger.LogInfo("Close connections");
-                inputStream.CloseConnection();
-                urlConnection.CloseConnection();
+                inputStream?.CloseConnection();
+                urlConnection?.CloseConnection();
             }
         }
 

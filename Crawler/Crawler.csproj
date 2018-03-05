@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\Content.cs" />
+    <Compile Include="Exception\ExceptionHandler.cs" />
     <Compile Include="Storage\DB.cs" />
     <Compile Include="Storage\DBConnector.cs" />
     <Compile Include="InputProperties\InputStream.cs" />
