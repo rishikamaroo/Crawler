@@ -6,7 +6,7 @@
     {
         public T GenerateResponse<T>(Exception e)
         {
-            //Generate Error responses
+            //Generate Error responses with objects
             T t = default(T);
             return t;
         }

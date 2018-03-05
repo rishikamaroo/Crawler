@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Crawler
+﻿namespace Crawler
 {
+    using System;
+
     public class URLConnection
     {
         public URLConnection()
