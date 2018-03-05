@@ -31,7 +31,7 @@ namespace Crawler
         {
             try
             {
-                //try to create a new instance of URL connection  here
+                //try to create a new instance of URL connection here
                 return new URLConnection();
             }
             catch (Exception e)

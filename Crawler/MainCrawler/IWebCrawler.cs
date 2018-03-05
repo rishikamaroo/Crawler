@@ -12,7 +12,7 @@ namespace Crawler
 
         void Crawl(string[] args);
 
-        void ProcessPage(URL url, Content page);
+        void ProcessPage(Content page);
 
         void AddNewURL(URL url, string newUrlString);
 

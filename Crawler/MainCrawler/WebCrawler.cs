@@ -6,7 +6,7 @@
 
     class WebCrawler : IWebcrawler
     {
-        // Absolute max pages
+        // Search limit for pages to search
         public static int SearchLimit = 20;
 
         // Max size of file 
@@ -20,6 +20,8 @@
 
         private Logger logger;
 
+        private bool start = true;
+
         public WebCrawler()
         {
             this.logger = new Logger();
@@ -27,6 +29,7 @@
 
         public Content RetrieveContent(URL url)
         {
+            this.logger.LogInfo("Retrieve content from the given url");
             URLConnection urlConnection = new URLConnection();
             InputStream inputStream = new InputStream();
             try
@@ -46,6 +49,7 @@
             }
             finally
             {
+                this.logger.LogInfo("Close connections");
                 inputStream.CloseConnection();
                 urlConnection.CloseConnection();
             }
@@ -61,23 +65,34 @@
                  */
 
                 Init(args, out int maxPagesToCrawl);
-                for (int i = 0; i < maxPagesToCrawl; i++)
+                if (start)
                 {
-                    var url = SearchUrls.Dequeue();
-                    var page = RetrieveContent(url);
-
-                    if (page.Length() != 0)
+                    for (int i = 0; i < maxPagesToCrawl; i++)
                     {
-                        ProcessPage(url, page);
+                        var url = SearchUrls.Dequeue();
+                        var page = RetrieveContent(url);
+
+                        if (page != null && page.Length() != 0)
+                        {
+                            ProcessPage(page);
+                        }
+
+                        if (CachedUrls.Count == 0)
+                        {
+                            break;
+                        }
                     }
 
-                    if (CachedUrls.Count == 0)
+                    if (CachedUrls.Count != 0)
                     {
-                        break;
+                        FeedResultToDatabase(CachedUrls);
                     }
+                    this.logger.LogInfo("Search complete!");
                 }
-                FeedResultToDatabase(CachedUrls);
-                this.logger.LogInfo("Search complete!");
+                else
+                {
+                    this.logger.LogError("Crawling stopped!");
+                }
             }
             catch (Exception e)
             {
@@ -102,16 +117,17 @@
             }
         }
 
-        public void ProcessPage(URL url, Content page)
+        public void ProcessPage(Content page)
         {
             try
             {
-                var formattedPage = page.GetText();
+                this.logger.LogInfo("Process the page to search for more urls");
+                var pageText = page.GetText();
                 var regex= new Regex("(?<=<a\\s*?href=(?:'|\"))[^'\"]*?(?=(?:'|\"))");
-                foreach (var match in regex.Matches(formattedPage))
+                foreach (var match in regex.Matches(pageText))
                 {
                     var newUrl = (string)match;
-                    AddNewURL(url, newUrl);
+                    AddNewURL(page.url, newUrl);
                 }
             }
             catch (Exception e)
@@ -120,20 +136,17 @@
             }
         }
 
-        // adds new URL to the queue. Accept only new URL's that end in htm or html. oldURL is the context, newURLString is the link
-        // (either an absolute or a relative URL).
-
         public void AddNewURL(URL oldURL, string newUrl)
         {
             try
             {
-                var formatterURl = URL.FomatUrl(oldURL, newUrl);
-                if (!CachedUrls.Contains(formatterURl))
+                this.logger.LogInfo("Add the formatted url into the queue");
+                var formattedURl = URL.FomatUrl(oldURL, newUrl);
+                if (!CachedUrls.Contains(formattedURl))
                 {
-                    var filePath = formatterURl.getPath();
-                    CachedUrls.Add(formatterURl);
-                    SearchUrls.Enqueue(formatterURl);
-                    this.logger.LogInfo("Found a new url: ", formatterURl.getPath());
+                    CachedUrls.Add(formattedURl);
+                    SearchUrls.Enqueue(formattedURl);
+                    this.logger.LogInfo("Found a new url: ", formattedURl.getPath());
                 }
             }
             catch (Exception e)
@@ -161,9 +174,13 @@
                         var userInputToCrawl = Int32.Parse(args[1]);
                         if (userInputToCrawl < maxPagesToCrawl) maxPagesToCrawl = userInputToCrawl;
                     }
+                    logger.LogInfo("Maximum number of pages:", maxPagesToCrawl);
                 }
-
-                logger.LogInfo("Maximum number of pages:", maxPagesToCrawl);
+                else
+                {
+                    start = false;
+                    this.logger.LogWarning("Invalid URl");
+                }
             }
             catch (Exception e)
             {
