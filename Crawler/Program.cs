@@ -8,8 +8,10 @@ namespace Crawler
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(String[] urls)
         {
+            WebCrawler webCrawler = new WebCrawler();
+            webCrawler.Crawl(urls);
         }
     }
 }

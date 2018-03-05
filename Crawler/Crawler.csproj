@@ -42,11 +42,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\Content.cs" />
+    <Compile Include="Storage\DB.cs" />
+    <Compile Include="Storage\DBConnector.cs" />
+    <Compile Include="InputProperties\InputStream.cs" />
+    <Compile Include="MainCrawler\IWebCrawler.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="URL\URL.cs" />
+    <Compile Include="URL\URLConnection.cs" />
+    <Compile Include="MainCrawler\WebCrawler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Config\CrawlerConfig.ini" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
