@@ -100,18 +100,11 @@
 
         private void FeedResultToDatabase(ISet<URL> cachedUrls)
         {
-            try
+            DB db = new DB();
+            foreach (var cachedUrl in cachedUrls)
             {
-                DB db = new DB();
-                foreach (var cachedUrl in cachedUrls)
-                {
-                    var sqlQuery = "Create a sql query command to enter in the record";
-                    db.runSql(sqlQuery);
-                }
-            }
-            catch (Exception e)
-            {
-                this.logger.LogException("Exception while logging query into database", e);
+                var sqlQuery = "Create a sql query command to enter in the record";
+                db.runSql(sqlQuery);
             }
         }
 
@@ -136,21 +129,13 @@
 
         public void AddNewURL(URL oldURL, string newUrl)
         {
-            try
+            this.logger.LogInfo("Add the formatted url into the queue");
+            var formattedURl = oldURL.FomatUrl(oldURL, newUrl);
+            if (!CachedUrls.Contains(formattedURl))
             {
-                this.logger.LogInfo("Add the formatted url into the queue");
-                var formattedURl = oldURL.FomatUrl(oldURL, newUrl);
-                if (!CachedUrls.Contains(formattedURl))
-                {
-                    CachedUrls.Add(formattedURl);
-                    SearchUrls.Enqueue(formattedURl);
-                    this.logger.LogInfo("Found a new url: ", formattedURl.getPath());
-                }
-            }
-            catch (Exception e)
-            {
-                this.logger.LogException("Exception while adding a new url", e);
-                return;
+                CachedUrls.Add(formattedURl);
+                SearchUrls.Enqueue(formattedURl);
+                this.logger.LogInfo("Found a new url: ", formattedURl.getPath());
             }
         }
 
