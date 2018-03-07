@@ -33,8 +33,8 @@
         public Content RetrieveContent(URL url)
         {
             this.logger.LogInfo("Retrieve content from the given url");
-            URLConnection urlConnection = new URLConnection();
-            InputStream inputStream = new InputStream();
+            URLConnection urlConnection = null;
+            InputStream inputStream = null;
             try
             {
                 this.logger.LogInfo("Establish URL connection for ", url.getPath());
@@ -44,11 +44,6 @@
                 this.logger.LogInfo("Get content from url");
                 inputStream = url.openStream();
                 return inputStream.GetContent();
-            }
-            catch (Exception e)
-            {
-                this.logger.LogException("Exception when trying to retrieve content from web page ", e);
-                return this.exceptionHandler.GenerateResponse<Content>(e);
             }
             finally
             {
@@ -65,37 +60,37 @@
             {
                 /*
                   Managae Config settings from here in config.ini
-                 */
+                */
 
                 Init(args, out int maxPagesToCrawl);
                 if (start)
                 {
-                    for (int i = 0; i < maxPagesToCrawl; i++)
-                    {
-                        var url = SearchUrls.Dequeue();
-                        var page = RetrieveContent(url);
-
-                        if (page != null && page.Length() != 0)
-                        {
-                            ProcessPage(page);
-                        }
-
-                        if (CachedUrls.Count == 0)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (CachedUrls.Count != 0)
-                    {
-                        FeedResultToDatabase(CachedUrls);
-                    }
-                    this.logger.LogInfo("Search complete!");
-                }
-                else
-                {
                     this.logger.LogError("Crawling stopped!");
+                    return;
                 }
+
+                for (int i = 0; i < maxPagesToCrawl; i++)
+                {
+                    var url = SearchUrls.Dequeue();
+                    var page = RetrieveContent(url);
+
+                    if (page != null && page.Length() != 0)
+                    {
+                        ProcessPage(page);
+                    }
+
+                    if (SearchUrls.Count == 0)
+                    {
+                        break;
+                    }
+                }
+
+                if (CachedUrls.Count != 0)
+                {
+                    FeedResultToDatabase(CachedUrls);
+                }
+
+                this.logger.LogInfo("Search complete!");
             }
             catch (Exception e)
             {
@@ -144,7 +139,7 @@
             try
             {
                 this.logger.LogInfo("Add the formatted url into the queue");
-                var formattedURl = URL.FomatUrl(oldURL, newUrl);
+                var formattedURl = oldURL.FomatUrl(oldURL, newUrl);
                 if (!CachedUrls.Contains(formattedURl))
                 {
                     CachedUrls.Add(formattedURl);
@@ -166,24 +161,24 @@
             {
                 this.logger.LogInfo("Initialize data structures to store known & new urls");
                 var url = new URL(args[0]);
-                if (url.Valid())
-                {
-                    CachedUrls = new HashSet<URL>(); CachedUrls.Add(url);
-                    SearchUrls = new Queue<URL>(); SearchUrls.Enqueue(url);
-
-                    this.logger.LogInfo("Starting search for Initial URL ", url.ToString());
-                    if (args.Length > 1)
-                    {
-                        var userInputToCrawl = Int32.Parse(args[1]);
-                        if (userInputToCrawl < maxPagesToCrawl) maxPagesToCrawl = userInputToCrawl;
-                    }
-                    logger.LogInfo("Maximum number of pages:", maxPagesToCrawl);
-                }
-                else
+                if (!url.Valid())
                 {
                     start = false;
                     this.logger.LogWarning("Invalid URl");
+                    return;
                 }
+
+                CachedUrls = new HashSet<URL>(); CachedUrls.Add(url);
+                SearchUrls = new Queue<URL>(); SearchUrls.Enqueue(url);
+
+                this.logger.LogInfo("Starting search for Initial URL ", url.ToString());
+                if (args.Length > 1)
+                {
+                    var userInputToCrawl = Int32.Parse(args[1]);
+                    if (userInputToCrawl < maxPagesToCrawl) maxPagesToCrawl = userInputToCrawl;
+                }
+
+                logger.LogInfo("Maximum number of pages:", maxPagesToCrawl);
             }
             catch (Exception e)
             {

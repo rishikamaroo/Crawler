@@ -9,18 +9,6 @@
 
         }
 
-        public void SetConnectionValues(bool v)
-        {
-            try
-            {
-                //Will use this setup values for connection
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
         public void Connect()
         {
             try
@@ -37,7 +25,7 @@
         {
             try
             {
-                //try to close 'this' URl connection here
+                //try to close the URl connection here
             }
             catch (Exception)
             {

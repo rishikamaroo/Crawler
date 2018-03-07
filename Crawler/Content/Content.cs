@@ -1,5 +1,7 @@
 ﻿namespace Crawler
 {
+    using System;
+
     public class Content
     {
         public URL url;
@@ -11,7 +13,7 @@
         public string GetText()
         {
             //Get the text of the page
-            return string.Empty;
+            return String.Empty;
         }
 
         public int Length()

@@ -4,10 +4,10 @@
 
     class Program
     {
-        public static void Main(String[] urls)
+        public static void Main(String[] args)
         {
             WebCrawler webCrawler = new WebCrawler();
-            webCrawler.Crawl(urls);
+            webCrawler.Crawl(args);
         }
     }
 }

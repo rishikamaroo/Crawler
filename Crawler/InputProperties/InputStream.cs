@@ -4,6 +4,8 @@
 
     public class InputStream
     {
+        private ExceptionHandler exceptionHandler;
+
         public InputStream()
         {
 
@@ -17,7 +19,7 @@
             }
             catch (Exception)
             {
-                
+                return;
             }
         }
 
@@ -28,9 +30,9 @@
                 //try to get content of inputstream
                 return new Content();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return this.exceptionHandler.GenerateResponse<Content>(e);
             }
         }
     }

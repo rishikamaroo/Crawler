@@ -8,6 +8,8 @@
 
         private Logger logger;
 
+        private ExceptionHandler exceptionHandler;
+
         public URL()
         {
             this.logger = new Logger();
@@ -19,8 +21,7 @@
 
         public URL(URL url, string newURL)
         {
-            // Creates a URL by parsing the given spec within a specified context. 
-            // The new URL is created from the given context URL and the spec argument
+            // Creates a URL by parsing the given spec within a specified context.
         }
 
         public URLConnection openConnection()
@@ -33,7 +34,7 @@
             catch (Exception e)
             {
                 this.logger.LogException("Exception while initializing URL connection", e);
-                return null;
+                return this.exceptionHandler.GenerateResponse<URLConnection>(e);
             }
         }
 
@@ -47,7 +48,7 @@
             catch (Exception e)
             {
                 this.logger.LogException("Exception while initializing URL connection", e);
-                return null;
+                return this.exceptionHandler.GenerateResponse<InputStream>(e);
             }
         }
 
@@ -71,7 +72,7 @@
             return string.Empty;
         }
 
-        public static URL FomatUrl(URL oldURL, string newUrl)
+        public URL FomatUrl(URL oldURL, string newUrl)
         {
             try
             {
@@ -80,7 +81,8 @@
             }
             catch (Exception e)
             {
-                return null;
+                this.logger.LogException("Exception while formatting url", e);
+                return this.exceptionHandler.GenerateResponse<URL>(e);
             }
         }
     }
