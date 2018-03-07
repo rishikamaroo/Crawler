@@ -4,7 +4,7 @@
 
     public class Content : IContent
     {
-        public URL url;
+        public URL url { get; }
 
         public Content()
         {
