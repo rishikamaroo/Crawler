@@ -108,7 +108,7 @@
             }
         }
 
-        public void ProcessPage(Content page)
+        public void ProcessPage(IContent page)
         {
             try
             {

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Content
+    public class Content : IContent
     {
         public URL url;
 

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class URL
+    public class URL : IURL
     {
         public string url;
 
@@ -17,11 +17,6 @@
 
         public URL(String url) {
             this.url = url;
-        }
-
-        public URL(URL url, string newURL)
-        {
-            // Creates a URL by parsing the given spec within a specified context.
         }
 
         public URLConnection openConnection()
@@ -76,7 +71,7 @@
         {
             try
             {
-                //return formatted URl from here
+                // Creates a URL by parsing the given spec within a specified context.
                 return new URL();
             }
             catch (Exception e)

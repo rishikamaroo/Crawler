@@ -1,6 +1,7 @@
 ﻿namespace Crawler
 {
     using System;
+    using System.Collections.Generic;
 
     interface IWebcrawler
     {
@@ -8,7 +9,7 @@
 
         void Crawl(string[] args);
 
-        void ProcessPage(Content page);
+        void ProcessPage(IContent page);
 
         void AddNewURL(URL url, string newUrlString);
 
