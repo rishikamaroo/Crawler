@@ -18,36 +18,36 @@
         // Known URLs
         private ISet<URL> CachedUrls;
 
-        private Logger logger;
+        private Logger Logger;
 
-        private ExceptionHandler exceptionHandler;
+        private ExceptionHandler ExceptionHandler;
 
         private bool start = true;
 
         public WebCrawler()
         {
-            this.logger = new Logger();
-            this.exceptionHandler = new ExceptionHandler();
+            this.Logger = new Logger();
+            this.ExceptionHandler = new ExceptionHandler();
         }
 
         public Content RetrieveContent(URL url)
         {
-            this.logger.LogInfo("Retrieve content from the given url");
+            this.Logger.LogInfo("Retrieve content from the given url");
             URLConnection urlConnection = null;
             InputStream inputStream = null;
             try
             {
-                this.logger.LogInfo("Establish URL connection for ", url.getPath());
+                this.Logger.LogInfo("Establish URL connection for ", url.getPath());
                 urlConnection = url.openConnection();
                 urlConnection.Connect();
 
-                this.logger.LogInfo("Get content from url");
+                this.Logger.LogInfo("Get content from url");
                 inputStream = url.openStream();
                 return inputStream.GetContent();
             }
             finally
             {
-                this.logger.LogInfo("Close connections");
+                this.Logger.LogInfo("Close connections");
                 inputStream?.CloseConnection();
                 urlConnection?.CloseConnection();
             }
@@ -55,7 +55,7 @@
 
         public void Crawl(string[] args)
         {
-            this.logger.LogInfo("Start Crawling...");
+            this.Logger.LogInfo("Start Crawling...");
             try
             {
                 /*
@@ -65,7 +65,7 @@
                 Init(args, out int maxPagesToCrawl);
                 if (start)
                 {
-                    this.logger.LogError("Crawling stopped!");
+                    this.Logger.LogError("Crawling stopped!");
                     return;
                 }
 
@@ -90,11 +90,11 @@
                     FeedResultToDatabase(CachedUrls);
                 }
 
-                this.logger.LogInfo("Search complete!");
+                this.Logger.LogInfo("Search complete!");
             }
             catch (Exception e)
             {
-                this.logger.LogException("Exception while crawling", e);
+                this.Logger.LogException("Exception while crawling", e);
             }
         }
 
@@ -112,7 +112,7 @@
         {
             try
             {
-                this.logger.LogInfo("Process the page to search for more urls");
+                this.Logger.LogInfo("Process the page to search for more urls");
                 var pageText = page.GetText();
                 var regex= new Regex("(?<=<a\\s*?href=(?:'|\"))[^'\"]*?(?=(?:'|\"))");
                 foreach (var match in regex.Matches(pageText))
@@ -123,19 +123,19 @@
             }
             catch (Exception e)
             {
-                this.logger.LogException("Error while processing information", e);
+                this.Logger.LogException("Error while processing information", e);
             }
         }
 
         public void AddNewURL(URL oldURL, string newUrl)
         {
-            this.logger.LogInfo("Add the formatted url into the queue");
+            this.Logger.LogInfo("Add the formatted url into the queue");
             var formattedURl = oldURL.FomatUrl(oldURL, newUrl);
             if (!CachedUrls.Contains(formattedURl))
             {
                 CachedUrls.Add(formattedURl);
                 SearchUrls.Enqueue(formattedURl);
-                this.logger.LogInfo("Found a new url: ", formattedURl.getPath());
+                this.Logger.LogInfo("Found a new url: ", formattedURl.getPath());
             }
         }
 
@@ -144,30 +144,30 @@
             maxPagesToCrawl = SearchLimit;
             try
             {
-                this.logger.LogInfo("Initialize data structures to store known & new urls");
+                this.Logger.LogInfo("Initialize data structures to store known & new urls");
                 var url = new URL(args[0]);
                 if (!url.Valid())
                 {
                     start = false;
-                    this.logger.LogWarning("Invalid URl");
+                    this.Logger.LogWarning("Invalid URl");
                     return;
                 }
 
                 CachedUrls = new HashSet<URL>(); CachedUrls.Add(url);
                 SearchUrls = new Queue<URL>(); SearchUrls.Enqueue(url);
 
-                this.logger.LogInfo("Starting search for Initial URL ", url.ToString());
+                this.Logger.LogInfo("Starting search for Initial URL ", url.ToString());
                 if (args.Length > 1)
                 {
                     var userInputToCrawl = Int32.Parse(args[1]);
                     if (userInputToCrawl < maxPagesToCrawl) maxPagesToCrawl = userInputToCrawl;
                 }
 
-                logger.LogInfo("Maximum number of pages:", maxPagesToCrawl);
+                this.Logger.LogInfo("Maximum number of pages:", maxPagesToCrawl);
             }
             catch (Exception e)
             {
-                this.logger.LogException("Exception while initializing data structures", e);
+                this.Logger.LogException("Exception while initializing data structures", e);
             }
         }
     }

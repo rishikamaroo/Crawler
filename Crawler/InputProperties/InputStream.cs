@@ -4,7 +4,7 @@
 
     public class InputStream
     {
-        private ExceptionHandler exceptionHandler;
+        private ExceptionHandler ExceptionHandler;
 
         public InputStream()
         {
@@ -32,7 +32,7 @@
             }
             catch (Exception e)
             {
-                return this.exceptionHandler.GenerateResponse<Content>(e);
+                return this.ExceptionHandler.GenerateResponse<Content>(e);
             }
         }
     }

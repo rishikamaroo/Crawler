@@ -8,7 +8,7 @@
 
         private Logger logger;
 
-        private ExceptionHandler exceptionHandler;
+        private ExceptionHandler ExceptionHandler;
 
         public URL()
         {
@@ -29,7 +29,7 @@
             catch (Exception e)
             {
                 this.logger.LogException("Exception while initializing URL connection", e);
-                return this.exceptionHandler.GenerateResponse<URLConnection>(e);
+                return this.ExceptionHandler.GenerateResponse<URLConnection>(e);
             }
         }
 
@@ -43,7 +43,7 @@
             catch (Exception e)
             {
                 this.logger.LogException("Exception while initializing URL connection", e);
-                return this.exceptionHandler.GenerateResponse<InputStream>(e);
+                return this.ExceptionHandler.GenerateResponse<InputStream>(e);
             }
         }
 
@@ -77,7 +77,7 @@
             catch (Exception e)
             {
                 this.logger.LogException("Exception while formatting url", e);
-                return this.exceptionHandler.GenerateResponse<URL>(e);
+                return this.ExceptionHandler.GenerateResponse<URL>(e);
             }
         }
     }
