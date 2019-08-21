@@ -8,6 +8,7 @@
 
         public Content()
         {
+
         }
 
         public string GetText()
