@@ -10,7 +10,8 @@
 
         }
 
-        public void LogInfo(String error, params object[] args) {
+        public void LogInfo(String error, params object[] args)
+        {
             //Log into file
         }
 
